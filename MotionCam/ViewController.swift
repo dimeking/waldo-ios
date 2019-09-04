@@ -33,6 +33,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         setUpGridPath()
         setUpGridLayer()
         gridImageView.layer.addSublayer(gridLayer)
+        
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        self.view.addGestureRecognizer(tapGR)
 
         times.append(NSDate.init().description)
         times.append(NSDate.init().description)
@@ -52,7 +55,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let bounds = gridImageView.bounds
         let cellWidth = bounds.width/CGFloat(gridCols)
-        let cellHeight = bounds.width/CGFloat(gridRows)
+        let cellHeight = bounds.height/CGFloat(gridRows)
         
         for X in stride(from: bounds.minX, to: bounds.maxX, by: cellWidth) {
             gridPath.move(to: CGPoint(x: X, y: bounds.minY))
@@ -76,6 +79,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         gridLayer.miterLimit = 10.0
         gridLayer.strokeColor = UIColor.white.cgColor
 
+    }
+    
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        guard sender.view != nil else { return }
+        let tapPoint = sender.location(in: gridImageView)
+//        print("tapPoint: [",tapPoint.x,", ", tapPoint.y, "]")
+        
+        let bounds = imageLayer.frame
+//        print("bounds: [",bounds.width,", ", bounds.height, "]")
+        guard bounds.width >= tapPoint.x else { return }
+        guard bounds.height >= tapPoint.y else { return }
+        
+        let cellWidth = bounds.width/CGFloat(gridCols)
+        let cellHeight = bounds.height/CGFloat(gridRows)
+        let cellX = cellWidth>0 ? Int(floor(min(tapPoint.x, bounds.width)/cellWidth)) : -1
+        let cellY = cellHeight>0 ? Int(floor(min(tapPoint.y, bounds.height)/cellHeight)) : -1
+        print("cell: [",cellX,", ", cellY, "]")
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
