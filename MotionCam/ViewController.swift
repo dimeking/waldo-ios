@@ -96,7 +96,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let cellX = cellWidth>0 ? Int(floor(min(tapPoint.x, bounds.width)/cellWidth)) : -1
         let cellY = cellHeight>0 ? Int(floor(min(tapPoint.y, bounds.height)/cellHeight)) : -1
         print("cell: [",cellX,", ", cellY, "]")
-    }
+        
+        times = QueryService().getMotionTimes(cellX: cellX, cellY: cellY)
+        tableView.reloadData()
+        print("reload times table: ", times)    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath)
